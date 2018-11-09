@@ -1,2 +1,2 @@
-# emailSystem-client
-Client side of the scratch built email system
+# Email System - Client
+Client side of the scratch built email project
