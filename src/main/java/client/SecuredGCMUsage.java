@@ -22,7 +22,15 @@ public class SecuredGCMUsage {
     public static int TAG_BIT_LENGTH = 128;
     public static String ALGO_TRANSFORMATION_STRING = "AES/GCM/PKCS5Padding";
 
-
+    /**
+     * Attempts to encrypt the {@code message} with a symmetric encryption technique
+     *
+     * @param message       the String of data you wish to encrypt
+     * @param aesKey        the symmetrical encryption key to be used for the encryption
+     * @param gcmParamSpec  the GCM parameter specifications used for the encryption
+     * @param aadData       the extra data tag to be included within the final encryption
+     * @return              a byte array of the encrypted message
+     */
     public static byte[] aesEncrypt(String message, SecretKey aesKey, GCMParameterSpec gcmParamSpec, byte[] aadData) {
         Cipher c = null;
 
@@ -48,7 +56,15 @@ public class SecuredGCMUsage {
         return cipherTextInByteArr;
     }
 
-
+    /**
+     * Attempts to decrypt the {@code encryptedMessage} with a symmetric encryption technique
+     *
+     * @param encryptedMessage the String of data you wish to encrypt
+     * @param aesKey           the symmetrical encryption key to be used for the decryption
+     * @param gcmParamSpec     the GCM parameter specifications used during encryption
+     * @param aadData          the extra data tag to be included within the encryption
+     * @return                 a byte array of the decrypted message
+     */
     public static byte[] aesDecrypt(byte[] encryptedMessage, SecretKey aesKey, GCMParameterSpec gcmParamSpec, byte[] aadData) {
         Cipher c = null ;
 

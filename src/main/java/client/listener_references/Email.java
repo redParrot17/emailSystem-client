@@ -4,6 +4,9 @@ import client.packets.EmailPacket;
 
 import java.util.Optional;
 
+/**
+ * The Email class to be passed to any {@link client.listeners.EmailListener}
+ */
 public class Email {
 
     private Connection connection;
@@ -14,6 +17,12 @@ public class Email {
     private final String author;
     private boolean hasRead;
 
+    /**
+     * @param author     the author of the email
+     * @param recipients the recipients of the email
+     * @param subject    the email's subject line
+     * @param message    the message the email contains
+     */
     public Email(String author, String[] recipients, String subject, String message) {
         this.connection = null;
         this.creationTimestamp = System.currentTimeMillis();
@@ -24,6 +33,9 @@ public class Email {
         this.hasRead = false;
     }
 
+    /**
+     * @param emailPacket the {@link EmailPacket} to be converted back into an Email
+     */
     public Email(EmailPacket emailPacket) {
         this.connection = null;
         this.creationTimestamp = emailPacket.getTimestamp();
@@ -34,6 +46,10 @@ public class Email {
         this.hasRead = emailPacket.hasOpened();
     }
 
+    /**
+     * Deep copy constructor
+     * @param email the {@link Email} to be deep copied
+     */
     public Email(Email email) {
         connection = null;
         this.creationTimestamp = email.getCreationTimestamp();

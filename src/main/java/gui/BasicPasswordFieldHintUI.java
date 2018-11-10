@@ -6,6 +6,9 @@ import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+/**
+ * Creates the ghost text for the password field
+ */
 public class BasicPasswordFieldHintUI extends BasicPasswordFieldUI implements FocusListener {
 
     private String hint;

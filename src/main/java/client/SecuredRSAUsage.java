@@ -1,11 +1,9 @@
 package client;
 
-import java.security.KeyPairGenerator;
 import java.util.Base64 ;;
 import javax.crypto.Cipher ;
 import java.lang.Exception ;
 import java.security.Key ;
-import java.security.KeyPair ;
 
 public class SecuredRSAUsage {
 
@@ -14,28 +12,13 @@ public class SecuredRSAUsage {
     static String PADDING_SCHEME = "OAEPWITHSHA-512ANDMGF1PADDING";
     static String MODE_OF_OPERATION = "ECB"; // This essentially means none behind the scene
 
-    public static void main(String args[]) {
-        String shortMessage = "This is my random test";
-
-
-        try {
-            // Generate Key Pairs
-            KeyPairGenerator rsaKeyGen = KeyPairGenerator.getInstance(ALGORITHM_NAME);
-            rsaKeyGen.initialize(RSA_KEY_LENGTH);
-            KeyPair rsaKeyPair = rsaKeyGen.generateKeyPair();
-
-            String encryptedText = rsaEncrypt(shortMessage, rsaKeyPair.getPublic());
-
-            String decryptedText = rsaDecrypt(Base64.getDecoder().decode(encryptedText), rsaKeyPair.getPrivate());
-
-            System.out.println("Encrypted text = " + encryptedText);
-            System.out.println("Decrypted text = " + decryptedText);
-
-        } catch(Exception e) {System.out.println("Exception while encryption/decryption"); e.printStackTrace(); }
-
-
-    }
-
+    /**
+     * Attempts to encrypt the {@code message} with an asymmetric encryption
+     * @param message    the string to encrypt
+     * @param publicKey  the public {@link Key} to be used for encryption
+     * @return           the encrypted string
+     * @throws Exception
+     */
     public static String rsaEncrypt(String message, Key publicKey) throws Exception {
         Cipher c = Cipher.getInstance(ALGORITHM_NAME + "/" + MODE_OF_OPERATION + "/" + PADDING_SCHEME);
         c.init(Cipher.ENCRYPT_MODE, publicKey);
@@ -43,7 +26,13 @@ public class SecuredRSAUsage {
         return Base64.getEncoder().encodeToString(cipherTextArray);
     }
 
-
+    /**
+     * Attempts to decrypt the {@code message} with an asymmetric encryption
+     * @param encryptedMessage  the string to encrypt
+     * @param privateKey        the public {@link Key} to be used for encryption
+     * @return                  the decrypted string
+     * @throws Exception
+     */
     public static String rsaDecrypt(byte[] encryptedMessage, Key privateKey) throws Exception {
         Cipher c = Cipher.getInstance(ALGORITHM_NAME + "/" + MODE_OF_OPERATION + "/" + PADDING_SCHEME);
         c.init(Cipher.DECRYPT_MODE, privateKey);
