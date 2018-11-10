@@ -1,4 +1,6 @@
 package client.listeners;
 
-public interface ClientListener {
-}
+/**
+ * Generic Listener class that all other client event listeners should extend
+ */
+public interface ClientListener { }
