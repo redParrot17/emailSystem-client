@@ -15,6 +15,10 @@ public class MainWindow extends JFrame {
 
     }
 
+    /**
+     * Constructs the login page
+     * @return built JPanel
+     */
     private JPanel constructLoginPage() {
 
         Dimension loginContentSize = new Dimension(250,45);
@@ -111,21 +115,36 @@ public class MainWindow extends JFrame {
         return main;
     }
 
+    /**
+     * Constructs the New-Account-Creation page
+     * @return
+     */
     private JPanel constructNewAccountPage() {
         JPanel newAccountPage = new JPanel();
         return newAccountPage;
     }
 
+    /**
+     * Constructs the email overview page
+     * @return
+     */
     private JPanel constructOverviewPage() {
         JPanel main = new JPanel();
         return main;
     }
 
+    /**
+     * Constructs the email display page
+     * @return
+     */
     private JPanel constructEmailDisplayPanel() {
         JPanel emailDisplay = new JPanel();
         return emailDisplay;
     }
 
+    /**
+     * Constructs the email creation page
+     */
     private void constructNewEmailWindow() {
         JFrame newEmailPage = new JFrame();
     }
