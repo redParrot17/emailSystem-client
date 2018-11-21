@@ -4,11 +4,13 @@ Client side of a scratch built email project.
 
 ## Feature List
 
-These are the features currently implemented into the program.
+These are the features this program currently supports along with features that are planned but not yet implemented.
 
-* Logging into an existing account
-* Creating a new account
-* Overview page of all your received emails
-* Viewing individual emails
-* Creating and sending new emails
-
+- [x] Logging into an existing account
+- [x] Creating a new account
+- [x] Overview page of all your received emails
+- [x] Viewing individual emails
+- [x] Creating and sending new emails
+* [ ] Deleting received emails
+* [ ] Logging back out
+* [ ] Marking an email as read
