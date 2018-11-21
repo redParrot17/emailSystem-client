@@ -1,6 +1,6 @@
 # Email System - Client
 
-Client side of a scratch built email project.
+Client side of a scratch built email system. This client is to be used in conjunction with the [server side](https://github.com/redParrot17/emailSystem-server) program.
 
 ## Feature List
 
@@ -14,3 +14,4 @@ These are the features this program currently supports along with features that 
 * [ ] Deleting received emails
 * [ ] Logging back out
 * [ ] Marking an email as read
+* [ ] Handling when the server shutsdown
