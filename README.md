@@ -15,3 +15,5 @@ These are the features this program currently supports along with features that 
 * [ ] Logging back out
 * [ ] Marking an email as read
 * [ ] Handling when the server shutsdown
+
+Want to use the tcp server/client framework in your own project? You can find the dependency [HERE](https://github.com/redParrot17/redTCP).
