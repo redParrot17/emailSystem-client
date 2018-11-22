@@ -108,7 +108,8 @@ public class EmailClient {
                 case "login":
                     if (args.toLowerCase().equals("valid")) {
                         synchronized (loginLock) {
-                            loggedInEmail = loginWindow.getEmail();
+                            loggedInEmail = newAccountBuilder.getEmail() != null ?
+                                    newAccountBuilder.getEmail() : loginWindow.getEmail();
                             isLoggedIn = true;
                             loginLock.notifyAll();
                         }
@@ -133,6 +134,10 @@ public class EmailClient {
             }
 
         };
+    }
+
+    public TcpClient getTcpClient() {
+        return tcpClient;
     }
 
     private EmailListener buildEmailListener() {

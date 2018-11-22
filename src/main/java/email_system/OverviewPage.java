@@ -1,5 +1,6 @@
 package email_system;
 
+import client.ClientException;
 import client.listener_references.Email;
 
 import javax.swing.*;
@@ -19,8 +20,12 @@ public class OverviewPage extends JPanel {
     private JTextField author;
     private JTextField subject;
     private JTextArea message;
+    private EmailClient emailClient;
+    private Email currentlySelected;
+    private JPanel currentlySelectedPanel;
 
     OverviewPage(EmailClient emailClient) {
+        this.emailClient = emailClient;
         emails = new HashSet<>();
         emailList = new JPanel();
         emailDisplay = new JPanel();
@@ -79,7 +84,29 @@ public class OverviewPage extends JPanel {
         newEmailBtn.setText("New Email");
         newEmailBtn.addMouseListener(new MouseListener() {
             @Override public void mouseClicked(MouseEvent e) {
+                if (e.getButton() != 1) return;
                 emailClient.handleCreateEmail();
+            }
+            @Override public void mousePressed(MouseEvent e) { }
+            @Override public void mouseReleased(MouseEvent e) { }
+            @Override public void mouseEntered(MouseEvent e) { }
+            @Override public void mouseExited(MouseEvent e) { }
+        });
+
+        JButton deleteEmail = new JButton();
+        deleteEmail.setText("Delete Selected");
+        mainHeader.add(deleteEmail);
+        deleteEmail.addMouseListener(new MouseListener() {
+            @Override public void mouseClicked(MouseEvent e) {
+                if (e.getButton() != 1) return;
+                if (currentlySelected == null || currentlySelectedPanel == null) return;
+                emailList.remove(currentlySelectedPanel);
+                emails.remove(currentlySelected);
+                try { emailClient.getTcpClient().sendCommand("delete-email", currentlySelected.getUUID());
+                } catch (ClientException e1) { e1.printStackTrace(); }
+                currentlySelectedPanel = null;
+                currentlySelected = null;
+                showEmail(null);
             }
             @Override public void mousePressed(MouseEvent e) { }
             @Override public void mouseReleased(MouseEvent e) { }
@@ -100,11 +127,19 @@ public class OverviewPage extends JPanel {
     }
 
     private void showEmail(Email email) {
-        author.setText(email.getAuthor());
-        subject.setText(email.getSubject());
-        message.setText(email.getMessage());
+        if (email != null) {
+            currentlySelected = email;
+            author.setText(email.getAuthor());
+            subject.setText(email.getSubject());
+            message.setText(email.getMessage());
+            email.setHasOpened(true);
+            currentlySelectedPanel.setBackground(Color.LIGHT_GRAY);
+        } else {
+            author.setText("");
+            subject.setText("");
+            message.setText("");
+        }
         emailDisplay.revalidate();
-        email.setHasOpened(true);
         emailDisplay.repaint();
     }
 
@@ -132,6 +167,9 @@ public class OverviewPage extends JPanel {
         JLabel subject = new JLabel();
         JLabel timestamp = new JLabel();
 
+        if (em.hasOpened()) email.setBackground(Color.LIGHT_GRAY);
+        else email.setBackground(Color.WHITE);
+
         from.setText(em.getAuthor());
         subject.setText(em.getSubject());
         timestamp.setText(idToDate(em.getCreationTimestamp()));
@@ -147,7 +185,12 @@ public class OverviewPage extends JPanel {
 
         email.addMouseListener(new MouseListener() {
             @Override public void mouseClicked(MouseEvent e) {
+                if (e.getButton() != 1) return;
+                currentlySelectedPanel = email;
                 showEmail(em);
+                em.setHasOpened(true);
+                try { emailClient.getTcpClient().sendCommand("read-email", em.getUUID());
+                } catch (ClientException e1) { e1.printStackTrace(); }
             }
             @Override public void mousePressed(MouseEvent e) { }
             @Override public void mouseReleased(MouseEvent e) { }
@@ -159,7 +202,7 @@ public class OverviewPage extends JPanel {
     }
 
     private String idToDate(long time) {
-        return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss z")
+        return new SimpleDateFormat("yyyy-MM-dd hh:mm")
                 .format(new Date(time));
     }
 

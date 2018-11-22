@@ -66,7 +66,7 @@ class EmailBuilder extends JFrame {
 
             if (subject.equals("")) {
                 JOptionPane.showMessageDialog(this, "Subject line cannot be left blank", "Email Status", JOptionPane.PLAIN_MESSAGE);
-            } else if (recipients.length <= 0) {
+            } else if (recipientField.getText().equals("")) {
                 JOptionPane.showMessageDialog(this, "You need to specify at least once recipient", "Email Status", JOptionPane.PLAIN_MESSAGE);
             } else {
                 boolean success = emailClient.sendEmail(new Email(emailClient.getMyEmail(), recipients, subject, message));

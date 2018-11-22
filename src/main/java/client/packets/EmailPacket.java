@@ -2,6 +2,8 @@ package client.packets;
 
 import client.listener_references.Email;
 
+import java.util.UUID;
+
 public class EmailPacket extends DataPacket {
 
     private String author;
@@ -9,6 +11,7 @@ public class EmailPacket extends DataPacket {
     private String subject;
     private String message;
     private boolean hasRead;
+    private String emailUUID;
 
     public EmailPacket(String author, String[] recipients, String subject, String message) {
         super();
@@ -17,6 +20,7 @@ public class EmailPacket extends DataPacket {
         this.subject = subject;
         this.message = message;
         this.hasRead = false;
+        emailUUID = UUID.randomUUID().toString();
     }
 
     public EmailPacket(Email email) {
@@ -26,6 +30,7 @@ public class EmailPacket extends DataPacket {
         this.subject = email.getSubject();
         this.message = email.getMessage();
         this.hasRead = email.hasOpened();
+        this.emailUUID = email.getUUID();
     }
 
     public String getAuthor() {
@@ -46,5 +51,9 @@ public class EmailPacket extends DataPacket {
 
     public boolean hasOpened() {
         return hasRead;
+    }
+
+    public String getEmailUUID() {
+        return emailUUID;
     }
 }

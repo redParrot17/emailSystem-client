@@ -3,6 +3,7 @@ package client.listener_references;
 import client.packets.EmailPacket;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * The Email class to be passed to any {@link client.listeners.EmailListener}
@@ -16,6 +17,7 @@ public class Email {
     private final String message;
     private final String author;
     private boolean hasRead;
+    private String uuid;
 
     /**
      * @param author     the author of the email
@@ -31,6 +33,7 @@ public class Email {
         this.subject = subject;
         this.message = message;
         this.hasRead = false;
+        uuid = UUID.randomUUID().toString();
     }
 
     /**
@@ -44,6 +47,7 @@ public class Email {
         this.subject = emailPacket.getSubject();
         this.message = emailPacket.getMessage();
         this.hasRead = emailPacket.hasOpened();
+        this.uuid = emailPacket.getEmailUUID();
     }
 
     /**
@@ -61,6 +65,7 @@ public class Email {
         this.subject = email.getSubject();
         this.message = email.getMessage();
         this.hasRead = email.hasRead;
+        this.uuid = email.uuid;
     }
 
     public void setConnection(Connection connection) {
@@ -97,5 +102,9 @@ public class Email {
 
     public Optional<Connection> getConnection() {
         return Optional.of(connection);
+    }
+
+    public String getUUID() {
+        return uuid;
     }
 }
