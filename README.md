@@ -6,6 +6,7 @@ Client side of a scratch built email system. This client is to be used in conjun
 
 These are the features this program currently supports along with features that are planned but not yet implemented.
 
+- [x] Running the client from a computer seperate from the server
 - [x] Logging into an existing account
 - [x] Creating a new account
 - [x] Overview page of all your received emails
