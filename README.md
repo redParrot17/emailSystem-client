@@ -1,6 +1,7 @@
 # Email System - Client
 
-Client side of a scratch built email system. This client is to be used in conjunction with the [server side](https://github.com/redParrot17/emailSystem-server) program.
+Client side of a scratch built email system. This client is to be used in conjunction with the [server side](https://github.com/redParrot17/emailSystem-server) program.  
+This client uses an insanely strong encryption for communicating with the server. And by strong, I mean signed 256 bit AES in conjunction with a 4096 bit RSA end-to-end encryption :)
 
 ## Feature List
 
