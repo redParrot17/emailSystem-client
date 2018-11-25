@@ -179,7 +179,7 @@ public class TcpClient implements AutoCloseable, Runnable {
                 if (received == null) return;
                 String json = new String(Base64.decodeBase64(received));
                 EncryptionPacket packet = gson.fromJson(json, EncryptionPacket.class);
-                String message = HybridCryptography.decryptEncryptionPacket(packet, clientKeys.getPrivate());
+                String message = HybridCryptography.decryptEncryptionPacket(packet, serverPublicKey, clientKeys.getPrivate());
 
                 switch (packet.getPayloadType()) {
                     case TEXT:
@@ -221,7 +221,7 @@ public class TcpClient implements AutoCloseable, Runnable {
         if (data == null) throw new IllegalArgumentException("Data cannot be null");
         if (serverPublicKey == null) throw new ClientException("Failed to encrypt data: server's public async encryption key does not exist");
         if (outgoing == null) throw new ClientException("Failed to send data: no secure connection to the server exists");
-        EncryptionPacket packet = HybridCryptography.generateEncryptionPacket(data, EncryptionPacket.PacketType.TEXT, serverPublicKey);
+        EncryptionPacket packet = HybridCryptography.generateEncryptionPacket(data, EncryptionPacket.PacketType.TEXT, serverPublicKey, clientKeys.getPrivate());
         if (packet == null) throw new ClientException("Failed to encrypt data: could not generate encryption packet");
         outgoing.println(Base64.encodeBase64String(gson.toJson(packet).getBytes()));
     }
@@ -241,7 +241,7 @@ public class TcpClient implements AutoCloseable, Runnable {
         if (serverPublicKey == null) throw new ClientException("Failed to encrypt data: server's public async encryption key does not exist");
         if (outgoing == null) throw new ClientException("Failed to send data: no secure connection to the server exists");
         String data = gson.toJson(new CommandPacket(command, arguments));
-        EncryptionPacket packet = HybridCryptography.generateEncryptionPacket(data, EncryptionPacket.PacketType.COMMAND, serverPublicKey);
+        EncryptionPacket packet = HybridCryptography.generateEncryptionPacket(data, EncryptionPacket.PacketType.COMMAND, serverPublicKey, clientKeys.getPrivate());
         if (packet == null) throw new ClientException("Failed to encrypt data: could not generate encryption packet");
         outgoing.println(Base64.encodeBase64String(gson.toJson(packet).getBytes()));
     }
@@ -258,7 +258,7 @@ public class TcpClient implements AutoCloseable, Runnable {
         if (serverPublicKey == null) throw new ClientException("Failed to encrypt data: server's public async encryption key does not exist");
         if (outgoing == null) throw new ClientException("Failed to send data: no secure connection to the server exists");
         String data = gson.toJson(new EmailPacket(email));
-        EncryptionPacket packet = HybridCryptography.generateEncryptionPacket(data, EncryptionPacket.PacketType.EMAIL, serverPublicKey);
+        EncryptionPacket packet = HybridCryptography.generateEncryptionPacket(data, EncryptionPacket.PacketType.EMAIL, serverPublicKey, clientKeys.getPrivate());
         if (packet == null) throw new ClientException("Failed to encrypt data: could not generate encryption packet");
         outgoing.println(Base64.encodeBase64String(gson.toJson(packet).getBytes()));
     }
