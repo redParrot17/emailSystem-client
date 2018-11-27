@@ -10,10 +10,12 @@ import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class OverviewPage extends JPanel {
 
-    private HashSet<Email> emails;
+    private SortedSet<Email> emails;
     private JPanel emailList;
 
     private JPanel emailDisplay;
@@ -26,7 +28,7 @@ public class OverviewPage extends JPanel {
 
     OverviewPage(EmailClient emailClient) {
         this.emailClient = emailClient;
-        emails = new HashSet<>();
+        emails = new TreeSet<>();
         emailList = new JPanel();
         emailDisplay = new JPanel();
         JScrollPane emailScrollPane = new JScrollPane(emailList);
@@ -150,7 +152,7 @@ public class OverviewPage extends JPanel {
         repaint();
     }
 
-    public void addEmails(HashSet<Email> emails) {
+    public void addEmails(SortedSet<Email> emails) {
         this.emails.addAll(emails);
         updateEmailList();
     }
