@@ -2,13 +2,15 @@ package client.listener_references;
 
 import client.packets.EmailPacket;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 /**
  * The Email class to be passed to any {@link client.listeners.EmailListener}
  */
-public class Email {
+public class Email implements Comparable<Email> {
 
     private Connection connection;
     private final long creationTimestamp;
@@ -106,5 +108,32 @@ public class Email {
 
     public String getUUID() {
         return uuid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Email email = (Email) o;
+        return creationTimestamp == email.creationTimestamp &&
+                hasRead == email.hasRead &&
+                Arrays.equals(recipients, email.recipients) &&
+                Objects.equals(subject, email.subject) &&
+                Objects.equals(message, email.message) &&
+                Objects.equals(author, email.author) &&
+                Objects.equals(uuid, email.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(creationTimestamp, subject, message, author, hasRead, uuid);
+        result = 31 * result + Arrays.hashCode(recipients);
+        return result;
+    }
+
+    @Override
+    public int compareTo(Email email) {
+        int result = Long.compare(this.getCreationTimestamp(), email.getCreationTimestamp());
+        return Integer.compare(0, result);
     }
 }
