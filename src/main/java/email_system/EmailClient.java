@@ -11,6 +11,7 @@ import gui.MainWindow;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.SortedSet;
 
 /**
  * The main class that runs the email client
@@ -119,9 +120,8 @@ public class EmailClient {
                     break;
 
                 case "email-list":
-                    Type type = new TypeToken<HashSet<Email>>() {
-                    }.getType();
-                    HashSet<Email> emails = new Gson().fromJson(args, type);
+                    Type type = new TypeToken<SortedSet<Email>>(){}.getType();
+                    SortedSet<Email> emails = new Gson().fromJson(args, type);
                     if (emails == null) return;
                     overviewPage.addEmails(emails);
                     break;
