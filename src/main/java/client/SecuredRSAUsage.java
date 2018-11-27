@@ -3,7 +3,7 @@ package client;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
-import java.util.Base64 ;;
+import java.util.Base64 ;
 import javax.crypto.Cipher ;
 import java.lang.Exception ;
 import java.security.Key ;
