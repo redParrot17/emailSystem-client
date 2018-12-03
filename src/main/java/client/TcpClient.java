@@ -28,6 +28,8 @@ import java.util.concurrent.Executors;
 
 public class TcpClient implements AutoCloseable, Runnable {
 
+    private boolean log = false;
+
     private int port;
     private Socket socket;
     private String address;
@@ -89,6 +91,7 @@ public class TcpClient implements AutoCloseable, Runnable {
      *          secure connection with the server
      */
     public CompletableFuture<Void> connect() throws ClientException {
+        if (log) System.out.println("[TcpClient#connect] Establishing a connection");
         if (isOpen) throw new ClientException("Client is already connected to the server");
         try { clientKeys = HybridCryptography.generateKeys();
         } catch (NoSuchAlgorithmException e) {
@@ -97,6 +100,7 @@ public class TcpClient implements AutoCloseable, Runnable {
         if (clientKeys == null) throw new ClientException("Failed to generate async encryption keys");
         try {
             socket = new Socket(address, port);
+            socket.setKeepAlive(true);
             incoming = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             outgoing = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException ioe) {
@@ -110,6 +114,7 @@ public class TcpClient implements AutoCloseable, Runnable {
         }
         isOpen = true;
         connection = new Connection(this, socket);
+        if (log) System.out.println("[TcpClient#connect] Connection established and verified");
         executorService = Executors.newSingleThreadExecutor();
         executorService.submit(this);
         return CompletableFuture.completedFuture(null);
@@ -127,6 +132,7 @@ public class TcpClient implements AutoCloseable, Runnable {
      *          message to the server after completing the handshake
      */
     private void exchangeKeys() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, ClientException {
+        if (log) System.out.println("[TcpConnection#exchangeKeys] Initiating handshake");
         outgoing.println(Arrays.toString(clientKeys.getPublic().getEncoded()));
         String firstMessage = incoming.readLine();
         if (firstMessage == null) throw new IOException();
@@ -137,6 +143,7 @@ public class TcpClient implements AutoCloseable, Runnable {
         } catch (ClientException e) {
             throw new ClientException("Failed to send handshake confirmation message: " + e.getMessage());
         }
+        if (log) System.out.println("[TcpClient#exchangeKeys] Handshake successful");
     }
 
     @SuppressWarnings("unused")
@@ -173,6 +180,7 @@ public class TcpClient implements AutoCloseable, Runnable {
 
     @Override
     public void run() {
+        if (log) System.out.println("[TcpClient#run] Initiating startup");
         try {
             while (isOpen) {
                 String received = incoming.readLine();
@@ -183,13 +191,16 @@ public class TcpClient implements AutoCloseable, Runnable {
 
                 switch (packet.getPayloadType()) {
                     case TEXT:
+                        if (log) System.out.println("[TcpClient#run][TEXT] Received");
                         listenerManager.raiseMessageEvent(new Message(connection, message));
                         break;
                     case COMMAND:
+                        if (log) System.out.println("[TcpClient#run][COMMAND] Received");
                         CommandPacket cPacket = gson.fromJson(message, CommandPacket.class);
                         listenerManager.raiseCommandEvent(new Command(connection, cPacket));
                         break;
                     case EMAIL:
+                        if (log) System.out.println("[TcpClient#run][EMAIL] Received");
                         EmailPacket ePacket = gson.fromJson(message, EmailPacket.class);
                         Email email = new Email(ePacket);
                         email.setConnection(connection);
@@ -198,8 +209,10 @@ public class TcpClient implements AutoCloseable, Runnable {
                 }
             }
         } catch (SocketException se) {
-            System.out.println(se.getMessage());
+            if (log) System.out.println("[TcpClient#run][SocketException] "+se.getMessage());
+            //TODO: do something if the server terminated the connection
         } catch (Exception e) {
+            if (log) System.out.println("[TcpClient#run][Exception] "+e.getMessage());
             if (e.getMessage().equals("client.listener_references.Connection reset")) {
                 System.out.println("Server terminated connection");
                 close();
@@ -231,8 +244,8 @@ public class TcpClient implements AutoCloseable, Runnable {
      * {@code arguments} to the server that the client is currently
      * connected to
      *
-     * @param   command
-     * @param   arguments
+     * @param   command   the command to be sent to the server
+     * @param   arguments the arguments associated with the command to be sent to the server
      * @throws  ClientException if something went wrong while trying
      *          to send the message
      */
@@ -276,15 +289,20 @@ public class TcpClient implements AutoCloseable, Runnable {
      */
     @Override
     public void close() {
+        if (log) System.out.println("[TcpClient#close] Initiating shutdown");
         try { sendCommand("sudo", "disconnect");
-        } catch (ClientException ignore) { }
+        } catch (ClientException ignore) {
+            if (log) System.out.println("[TcpClient#close] Failed to send disconnect command to the server ("+ignore.getMessage()+")");
+        }
         if (!isOpen) return; isOpen = false;
         executorService.shutdownNow();
         connection = null;
         try { socket.close();
         } catch (IOException ioe) {
+            if (log) System.out.println("[TcpClient#close] Failed to close socket ("+ioe.getMessage()+")");
             ioe.printStackTrace();
         }
+        if (log) System.out.println("[TcpClient#close] Successfully shutdown");
     }
 
 }

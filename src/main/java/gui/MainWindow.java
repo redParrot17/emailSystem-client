@@ -1,13 +1,20 @@
 package gui;
 
-import javax.swing.*;
+import client.TcpClient;
 
-public class MainWindow extends JFrame {
+import javax.swing.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
+public class MainWindow extends JFrame implements WindowListener {
 
     private JPanel last;
+    private TcpClient client;
 
-    public MainWindow() {
+    public MainWindow(TcpClient client) {
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(this);
+        this.client = client;
         last = null;
     }
 
@@ -19,4 +26,14 @@ public class MainWindow extends JFrame {
         revalidate();
     }
 
+    @Override public void windowOpened(WindowEvent e) { }
+    @Override public void windowClosing(WindowEvent e) { }
+    @Override public void windowClosed(WindowEvent e) {
+        client.close();
+        System.exit(0);
+    }
+    @Override public void windowIconified(WindowEvent e) { }
+    @Override public void windowDeiconified(WindowEvent e) { }
+    @Override public void windowActivated(WindowEvent e) { }
+    @Override public void windowDeactivated(WindowEvent e) { }
 }

@@ -40,7 +40,7 @@ public class EmailClient {
         loggedInEmail = null;
         loginLock = new Object();
 
-        mainWindow = new MainWindow();
+        mainWindow = new MainWindow(tcpClient);
         overviewPage = new OverviewPage(this);
         newAccountBuilder = new NewAccountBuilder(tcpClient);
         loginWindow = new LoginWindow(mainWindow, tcpClient, newAccountBuilder);
